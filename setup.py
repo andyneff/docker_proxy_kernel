@@ -10,5 +10,5 @@ setup(name='docker_proxy_kernel',
       license='MIT',
       packages=[],
       install_requires=['six', 'traitlets', 'ipykernel', 'jupyter_client'],
-      scripts=[]
+      scripts=['scripts/proxy_kernel.py']
       )
