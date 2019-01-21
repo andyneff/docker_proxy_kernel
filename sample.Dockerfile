@@ -22,7 +22,7 @@ RUN PS1=: ;\
 #  "-f", "{connection_file}",
 #  "--image", "test_kernel:latest",
 #  "--docker", "nvidia-docker",
-#  "--cmd", "['/opt/docker_venv/bin/python', '-m', 'ipykernel']"
+#  "--cmd", "['/opt/docker_venv/bin/python', '-m', 'ipykernel_launcher']"
 # ],
 # "env": {},
 # "language": "python"

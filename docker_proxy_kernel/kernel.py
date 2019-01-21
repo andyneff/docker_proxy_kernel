@@ -9,6 +9,7 @@ from uuid import uuid4
 import jupyter_client.session
 import jupyter_client.manager
 
+import os
 
 class DockerProxyKernel(object):
   def __init__(self):
@@ -68,6 +69,8 @@ class DockerProxyKernel(object):
 
       docker_name = uuid4()
 
+      env=None
+
       if docker_image:
 
         command = docker + \
@@ -79,20 +82,33 @@ class DockerProxyKernel(object):
              '-p', '{shell_port}:{docker_shell_port}'.format(**self.config),
              '-p', '{stdin_port}:{docker_stdin_port}'.format(**self.config),
              '--name={}'.format(docker_name)] + docker_arguments + \
-            [docker_image] + cmd + \
-            ["--control={docker_control_port}".format(**self.config),
-             "--hb={docker_hb_port}".format(**self.config),
-             "--iopub={docker_iopub_port}".format(**self.config),
-             "--shell={docker_shell_port}".format(**self.config),
-             "--stdin={docker_stdin_port}".format(**self.config),
-             "--ip=0.0.0.0", "--transport={transport}".format(**self.config),
-             "--Session.signature_scheme={signature_scheme}".format(
-                 **self.config),
-             "--Session.key=b'{key}'".format(**self.config)]
+            [docker_image]
       else:
-        raise Exception('No docker_image argument')
+        command = []
+        env=os.environ.copy()
+        env.update(JUPYTER_CONTROL_PORT_HOST=str(self.config['control_port']),
+                   JUPYTER_CONTROL_PORT=str(self.config['docker_control_port']),
+                   JUPYTER_HB_PORT_HOST=str(self.config['hb_port']),
+                   JUPYTER_HB_PORT=str(self.config['docker_hb_port']),
+                   JUPYTER_IOPUB_PORT_HOST=str(self.config['iopub_port']),
+                   JUPYTER_IOPUB_PORT=str(self.config['docker_iopub_port']),
+                   JUPYTER_SHELL_PORT_HOST=str(self.config['shell_port']),
+                   JUPYTER_SHELL_PORT=str(self.config['docker_shell_port']),
+                   JUPYTER_STDIN_PORT_HOST=str(self.config['stdin_port']),
+                   JUPYTER_STDIN_PORT=str(self.config['docker_stdin_port']))
+
+    command += \
+        cmd + ["--control={docker_control_port}".format(**self.config),
+               "--hb={docker_hb_port}".format(**self.config),
+               "--iopub={docker_iopub_port}".format(**self.config),
+               "--shell={docker_shell_port}".format(**self.config),
+               "--stdin={docker_stdin_port}".format(**self.config),
+               "--ip=0.0.0.0", "--transport={transport}".format(**self.config),
+               "--Session.signature_scheme={signature_scheme}".format(
+                   **self.config),
+               "--Session.key=b'{key}'".format(**self.config)]
 
     try:
-      Popen(command).wait()
+      Popen(command, env=env).wait()
     except KeyboardInterrupt:
       self.stop_kernel()

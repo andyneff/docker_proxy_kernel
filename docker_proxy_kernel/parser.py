@@ -41,7 +41,7 @@ def get_parser():
   aa = parser.add_argument
   aa('-f', dest='connection_file', type=str, help='Connection file',
      required=True)
-  aa('--image', type=str, help='Name of docker image to be run', required=True)
+  aa('--image', type=str, help='Name of docker image to be run', required=False)
   aa('--control', type=int, help='Docker control port', default=10000)
   aa('--hb', type=int, help='Docker heart beat port', default=10001)
   aa('--iopub', type=int, help='Docker IO publish port', default=10002)
