@@ -8,7 +8,7 @@ setup(name='docker_proxy_kernel',
       author='Andrew Neff',
       author_email='andrew.neff@visionsystemsinc.com',
       license='MIT',
-      packages=[],
+      packages=['docker_proxy_kernel'],
       install_requires=['six', 'traitlets', 'ipykernel', 'jupyter_client'],
       scripts=['scripts/proxy_kernel.py']
       )
